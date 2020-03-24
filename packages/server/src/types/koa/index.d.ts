@@ -7,12 +7,19 @@ declare module 'koa' {
   }
 
   interface JsonInputParams {
-    body?: BodyInput;
+    body?: BodyInput | string | unknown[];
     statusCode?: number;
   }
 
   interface ExtendableContext {
     json: (params: JsonInputParams) => void;
+  }
+
+  interface Request {
+    body?: {
+      initialInvestment?: string;
+      monthlyInvestment?: string;
+    };
   }
 }
 

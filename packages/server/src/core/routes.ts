@@ -4,6 +4,7 @@ import bodyParser from 'koa-bodyparser';
 import errorCatcher from '../middlewares/errorCatcher';
 import transaction from '../middlewares/transaction';
 import hello from '../controllers/api/hello';
+import projection from '../controllers/api/projection';
 import { ExtendedContext, ExtendedState } from '../types/koa';
 import ApiError, { ApiErrorCode } from '../errors/ApiError';
 
@@ -17,6 +18,7 @@ function initApiRoutes(): Router<ExtendedState> {
   apiRouter.use(transaction);
   apiRouter.use(errorCatcher);
   apiRouter.get('/hello', hello);
+  apiRouter.post('/projection', projection);
 
   return apiRouter;
 }
