@@ -35,10 +35,20 @@ Refer to "Getting started" sections README files in each package for more detail
 
 ## Available scripts
 
-### yarn run docker:build-all
+### yarn run docker:build
 
-Re-build all images via Docker compose
+Re-build all local Docker images via Docker compose
+
+\* Append `-droplet` at end of command to target Digital Ocean droplet instead.
 
 ### yarn run docker:deploy
 
-Runs all containers via Docker compose
+Run all containers via Docker compose
+
+\* Append `-droplet` at end of command to target Digital Ocean droplet instead.
+
+### yarn run docker:dispose
+
+Stop and remove all containers via Docker compose
+
+\* Append `-droplet` at end of command to target Digital Ocean droplet instead.
