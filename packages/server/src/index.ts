@@ -1,10 +1,12 @@
 import Koa from 'koa';
-import { initDotEnv, getNodePort } from './core/env';
+import { initDotEnv, getNodePort, getRedisConfig } from './core/env';
 import { initLogger } from './core/logger';
+import { initRedis } from './core/redis';
 import { initRoutes } from './core/routes';
+import { ExtendedState, ExtendedContext } from './types/koa';
 
 function start(): void {
-  const app = new Koa();
+  const app = new Koa<ExtendedState, ExtendedContext>();
 
   // init logging
   initLogger(app);
@@ -19,6 +21,8 @@ function start(): void {
      * make testing difficult. It also makes parts of codebase tightly coupled
      * with process.env.
      */
+
+    initRedis(app, getRedisConfig(env));
 
     initRoutes(app);
 

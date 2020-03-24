@@ -1,4 +1,5 @@
 import { ParameterizedContext } from 'koa';
+import { AsyncRedisClient } from '../redis';
 
 declare module 'koa' {
   interface BodyInput {
@@ -17,6 +18,7 @@ declare module 'koa' {
 
 export interface ExtendedState {
   transactionId: string;
+  redis: AsyncRedisClient;
 }
 
 export type ExtendedContext = ParameterizedContext<ExtendedState>;

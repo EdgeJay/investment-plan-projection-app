@@ -45,7 +45,7 @@ export function jsonResponseHelper() {
  *
  * @param {object} app Koa app instance
  */
-export function initRoutes(app: Koa): void {
+export function initRoutes(app: Koa<ExtendedState, ExtendedContext>): void {
   app.use(jsonResponseHelper());
 
   // bodyParser helps to parse request body and store it under ctx.request.body
