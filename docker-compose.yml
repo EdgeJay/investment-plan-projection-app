@@ -1,0 +1,21 @@
+version: '2.0'
+services:
+  server:
+    container_name: ipp_server
+    build: ./packages/server
+    image: edgejay/ipp-server
+    networks:
+    - ipp_network
+  nginx:
+    container_name: ipp_nginx
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    image: edgejay/ipp-nginx
+    ports:
+    - "8080:80"
+    networks:
+    - ipp_network
+networks:
+  ipp_network:
+    driver: bridge

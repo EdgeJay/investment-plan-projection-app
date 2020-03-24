@@ -1,0 +1,40 @@
+{
+  "name": "investment-plan-projection-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "An investment plan projection SPA built in React",
+  "scripts": {
+    "lint": "lerna run lint",
+    "test": "lerna run test",
+    "build": "lerna run build",
+    "docker:build-all": "docker-compose build",
+    "docker:deploy": "docker-compose up -d",
+    "docker:dispose": "docker-compose down"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EdgeJay/investment-plan-projection-app.git"
+  },
+  "keywords": [
+    "lerna",
+    "node.js",
+    "node",
+    "typescript",
+    "react",
+    "koa",
+    "nginx",
+    "docker"
+  ],
+  "author": "Wu Huijie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EdgeJay/investment-plan-projection-app/issues"
+  },
+  "homepage": "https://github.com/EdgeJay/investment-plan-projection-app#readme",
+  "devDependencies": {
+    "lerna": "^3.20.2"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
