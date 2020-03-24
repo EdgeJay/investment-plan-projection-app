@@ -3,6 +3,8 @@ services:
   redis:
     container_name: ipp_redis
     image: redis
+    ports:
+    - "6379:6379"
     networks:
     - ipp_network
   server:

@@ -52,3 +52,23 @@ Run all containers via Docker compose
 Stop and remove all containers via Docker compose
 
 \* Append `-droplet` at end of command to target Digital Ocean droplet instead.
+
+## 3rd-party libraries
+
+This repo used the following 3rd-party libraries for various tasks:
+
+### [Koa.js](https://koajs.com/)
+
+Backbone of server app. Handles routing, incoming/outgoing requests/responses. Very similar to Express.
+
+### [styled-components](https://styled-components.com/)
+
+Use CSS in code to style React components.
+
+### [dotenv](https://github.com/motdotla/dotenv)
+
+Loads app environment variables from .env files.
+
+### [Pino](https://github.com/pinojs/pino)
+
+Node.js logger.
