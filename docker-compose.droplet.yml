@@ -3,6 +3,8 @@ services:
   redis:
     container_name: ipp_redis
     image: redis
+    ports:
+    - "6379"
     networks:
     - ipp_network
   server:
@@ -10,7 +12,7 @@ services:
     build: ./packages/server
     image: edgejay/ipp-server
     ports:
-    - "4000:4000"
+    - "4000"
     networks:
     - ipp_network
   nginx:
@@ -20,7 +22,7 @@ services:
       dockerfile: nginx.Dockerfile
     image: edgejay/ipp-nginx
     ports:
-    - "8080:80"
+    - "80:80"
     networks:
     - ipp_network
 networks:
