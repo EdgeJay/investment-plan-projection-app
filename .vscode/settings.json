@@ -1,0 +1,11 @@
+{
+  "editor.formatOnSave": true,
+  "javascript.format.enable": false,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "editor.tabSize": 2
+}
