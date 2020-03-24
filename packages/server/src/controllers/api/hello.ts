@@ -7,6 +7,7 @@ export default async (ctx: ExtendedContext, next: Next) => {
     body: {
       transactionId,
       message: 'Hello world!',
+      host: ctx.request.host,
     },
   });
   await next();

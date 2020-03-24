@@ -4,6 +4,8 @@ An investment plan projection SPA built in React.
 
 Frontend app bootstrapped via CRA. Additional api support provided by Koa.js app. Client and server apps are accessible via Nginx and deployable via Docker.
 
+A working version of the app can also be viewed at http://134.209.40.92
+
 ## Getting started
 
 ### Pre-requisites
