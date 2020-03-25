@@ -34,7 +34,7 @@ const Projection: FunctionComponent = () => {
   return (
     <Body>
       <Suspense fallback={<Loader waitMessage={'Loading chart...'} />}>
-        <Chart />
+        <Chart dataSet={dataSet} />
       </Suspense>
     </Body>
   );

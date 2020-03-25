@@ -21,6 +21,9 @@ export async function fetchProjection({
   if (!Number.isNaN(initialInvestment) && !Number.isNaN(monthlyInvestment)) {
     const request = new Request(endpoint, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         initialInvestment,
         monthlyInvestment,
