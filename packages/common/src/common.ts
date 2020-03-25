@@ -1,3 +1,2 @@
-export function foo(): string {
-  return 'bar';
-}
+export * as api from './api';
+export * as numbers from './numbers';

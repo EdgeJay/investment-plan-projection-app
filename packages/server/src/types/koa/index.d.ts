@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { ParameterizedContext } from 'koa';
 import { AsyncRedisClient } from '../redis';
 
@@ -16,10 +18,12 @@ declare module 'koa' {
   }
 
   interface Request {
-    body?: {
-      initialInvestment?: string;
-      monthlyInvestment?: string;
-    };
+    body?:
+      | {
+          initialInvestment?: string;
+          monthlyInvestment?: string;
+        }
+      | any;
   }
 }
 

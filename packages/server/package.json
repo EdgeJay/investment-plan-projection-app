@@ -49,6 +49,7 @@
     "uuid": "^7.0.2"
   },
   "devDependencies": {
+    "@ipp/common": "^0.1.0",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",
     "@types/bluebird": "^3.5.30",

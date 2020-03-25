@@ -6,7 +6,7 @@
   "author": "Wu Huijie <hjwu85@gmail.com>",
   "homepage": "https://github.com/EdgeJay/investment-plan-projection-app/tree/master/packages/common#readme",
   "license": "MIT",
-  "main": "src/common.ts",
+  "main": "dist/common.js",
   "directories": {
     "lib": "src",
     "test": "__tests__"
@@ -19,7 +19,10 @@
     "url": "git+https://github.com/EdgeJay/investment-plan-projection-app.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "clean": "rm -rf ./dist",
+    "dev": "tsc --watch",
+    "test": "tsc && ava --verbose --config ./ava.config.js",
+    "build": "yarn run clean && tsc"
   },
   "bugs": {
     "url": "https://github.com/EdgeJay/investment-plan-projection-app/issues"
