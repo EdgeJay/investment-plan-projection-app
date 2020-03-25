@@ -5,12 +5,14 @@ import styled from 'styled-components';
 const StyledHeader = styled.header`
   display: flex;
   flex-flow: row nowrap;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
   background-color: #000;
+  font-size: 1rem;
   color: #fff;
 
   a {
     color: #fff;
+    line-height: 1;
     padding: 1rem 0.5rem;
     text-decoration: none;
     transition: background 0.2s ease;
