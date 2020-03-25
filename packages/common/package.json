@@ -6,7 +6,8 @@
   "author": "Wu Huijie <hjwu85@gmail.com>",
   "homepage": "https://github.com/EdgeJay/investment-plan-projection-app/tree/master/packages/common#readme",
   "license": "MIT",
-  "main": "dist/common.js",
+  "main": "dist/index.js",
+  "typings": "./dist/index.d.ts",
   "directories": {
     "lib": "src",
     "test": "__tests__"
