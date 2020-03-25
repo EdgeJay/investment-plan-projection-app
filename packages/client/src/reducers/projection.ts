@@ -15,8 +15,8 @@ interface Reducers {
 export const initialState: ProjectionInitialState = {
   busy: false,
   dataSet: [],
-  initialInvestment: 0,
-  monthlyInvestment: 0,
+  initialInvestment: 10000,
+  monthlyInvestment: 2000,
 };
 
 const reducers: Reducers = {

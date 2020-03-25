@@ -41,7 +41,7 @@ export const fetchProjection = ({
     const dataSet = await api.fetchProjection({
       initialInvestment,
       monthlyInvestment,
-      endpoint: '/api/projection',
+      endpoint: 'http://localhost:4000/api/projection',
     });
 
     // Update store with fetched data

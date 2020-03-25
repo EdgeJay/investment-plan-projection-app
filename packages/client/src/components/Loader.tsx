@@ -16,10 +16,16 @@ const Container = styled.div`
   }
 `;
 
-const Loader: FunctionComponent = () => (
+const defaultWaitMessage = 'Loading';
+
+interface Props {
+  waitMessage?: string;
+}
+
+const Loader: FunctionComponent<Props> = ({ waitMessage = defaultWaitMessage }) => (
   <Body>
     <Container>
-      <p>{'Loading'}</p>
+      <p>{waitMessage}</p>
     </Container>
   </Body>
 );
