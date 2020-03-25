@@ -1,10 +1,20 @@
 import React, { createRef, Component, RefObject } from 'react';
 import * as d3 from 'd3';
-import { ProjectionRow } from '@ipp/common';
+import { numbers, ProjectionRow } from '@ipp/common';
 
 const chartElementId = 'chart';
+const defaultCanvasWidth = 500;
+const defaultCanvasHeight = 500;
+const margin = {
+  top: 16,
+  right: 16,
+  bottom: 20,
+  left: 70,
+};
 
 interface Props {
+  width?: number;
+  height?: number;
   dataSet?: ProjectionRow[];
 }
 
@@ -20,12 +30,113 @@ class Chart extends Component<Props> {
     return this._element;
   }
 
+  getCanvasSize(): { width: number; height: number } {
+    const { width, height } = this.props;
+    return {
+      width: width || defaultCanvasWidth,
+      height: height || defaultCanvasWidth,
+    };
+  }
+
+  getInvestRange(dataSet?: ProjectionRow[]): { min: number; max: number } {
+    const result = { min: 0, max: 0 };
+    let values: number[] = [];
+
+    if (dataSet && dataSet.length > 0) {
+      dataSet.forEach(data => {
+        values.push(data.totalDeposit);
+        values.push(data.expectedAmounts['10']);
+        values.push(data.expectedAmounts['50']);
+        values.push(data.expectedAmounts['75']);
+        values.push(data.expectedAmounts.benchmark);
+      });
+
+      values = values.sort().reverse();
+
+      return {
+        min: values[0],
+        max: values[values.length - 1],
+      };
+    }
+
+    return result;
+  }
+
+  getDateRange(dataSet?: ProjectionRow[]): { min: number; max: number } {
+    const result = { min: 0, max: 0 };
+    let values: number[] = [];
+
+    if (dataSet && dataSet.length > 0) {
+      dataSet.forEach(data => {
+        const parts = data.yearMonth.split('-');
+        const timestamp = new Date(
+          numbers.convertToInt(parts[0]),
+          numbers.convertToInt(parts[1])
+        ).getTime();
+        values.push(timestamp);
+      });
+
+      values = values.sort();
+
+      return {
+        min: values[0],
+        max: values[values.length - 1],
+      };
+    }
+
+    return result;
+  }
+
+  drawAxes(dataSet?: ProjectionRow[]) {
+    const { min: valueMin, max: valueMax } = this.getInvestRange(dataSet);
+    const { min: dateMin, max: dateMax } = this.getDateRange(dataSet);
+    const { width, height } = this.getCanvasSize();
+
+    const box = d3.select(this.element.current);
+
+    // Functions for drawing X axis
+    const xTicks = d3
+      .scaleLinear()
+      .domain([dateMin, dateMax])
+      .range([margin.left, width - margin.right]);
+
+    const drawXAxis = (g: d3.Selection<SVGGElement, unknown, null, undefined>) =>
+      g.attr('transform', `translate(0, ${height - margin.bottom})`).call(d3.axisBottom(xTicks));
+
+    // Functions for drawing Y axis
+    const yTicks = d3
+      .scaleLinear()
+      .domain([valueMin, valueMax])
+      .range([height - margin.bottom, margin.top]);
+
+    const drawYAxis = (g: d3.Selection<SVGGElement, unknown, null, undefined>) =>
+      g.attr('transform', `translate(${margin.left}, 0)`).call(d3.axisLeft(yTicks));
+
+    const canvas = box
+      .append('svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .style('width', `${width || defaultCanvasWidth}px`)
+      .style('height', `${height || defaultCanvasHeight}px`)
+      .style('background-color', '#fff')
+      .style('box-shadow', '2px 2px 8px 0px rgba(115,115,115,1)');
+
+    canvas.append('g').call(drawXAxis);
+    canvas.append('g').call(drawYAxis);
+  }
+
   componentDidMount() {
     d3.select(this.element.current)
       .style('width', '100%')
       .style('height', '100%')
-      .style('background-color', '#fff')
-      .style('box-shadow', '2px 2px 8px 0px rgba(115,115,115,1)');
+      .style('display', 'flex')
+      .style('flex-flow', 'row nowrap')
+      .style('justify-content', 'center')
+      .style('align-items', 'center');
+  }
+
+  componentDidUpdate() {
+    const { dataSet } = this.props;
+    this.drawAxes(dataSet);
   }
 
   render() {
