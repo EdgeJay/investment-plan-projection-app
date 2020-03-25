@@ -18,6 +18,7 @@ function initApiRoutes(): Router<ExtendedState> {
   apiRouter.use(transaction);
   apiRouter.use(errorCatcher);
   apiRouter.get('/hello', hello);
+  apiRouter.options('/projection', projection);
   apiRouter.post('/projection', projection);
 
   return apiRouter;
