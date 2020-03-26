@@ -16,6 +16,7 @@ const Container = styled.div`
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
 const Chart = lazy(() => import('../components/Chart'));
