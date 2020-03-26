@@ -1,6 +1,6 @@
 import React, { createRef, Component, RefObject } from 'react';
 import * as d3 from 'd3';
-import { numbers, ProjectionRow } from '@ipp/common';
+import { date as dateUtils, numbers, ProjectionRow } from '@ipp/common';
 
 const chartElementId = 'chart';
 const defaultCanvasWidth = 500;
@@ -38,9 +38,8 @@ class Chart extends Component<Props> {
     };
   }
 
-  getInvestRange(dataSet?: ProjectionRow[]): { min: number; max: number } {
-    const result = { min: 0, max: 0 };
-    let values: number[] = [];
+  getInvestmentValues(dataSet?: ProjectionRow[]): number[] {
+    const values: number[] = [];
 
     if (dataSet && dataSet.length > 0) {
       dataSet.forEach(data => {
@@ -50,51 +49,31 @@ class Chart extends Component<Props> {
         values.push(data.expectedAmounts['75']);
         values.push(data.expectedAmounts.benchmark);
       });
-
-      values = values.sort((a, b) => a - b);
-
-      return {
-        min: values[0],
-        max: values[values.length - 1],
-      };
     }
 
-    return result;
-  }
-
-  getDateRange(dataSet?: ProjectionRow[]): { min: Date; max: Date } {
-    const result = { min: new Date(), max: new Date() };
-    let values: Date[] = [];
-
-    if (dataSet && dataSet.length > 0) {
-      dataSet.forEach(data => {
-        const parts = data.yearMonth.split('-');
-        const date = new Date(numbers.convertToInt(parts[0]), numbers.convertToInt(parts[1]) - 1);
-        values.push(date);
-      });
-
-      values = values.sort((a, b) => a.getTime() - b.getTime());
-
-      return {
-        min: values[0],
-        max: values[values.length - 1],
-      };
-    }
-
-    return result;
+    return values;
   }
 
   drawAxes(dataSet?: ProjectionRow[]) {
-    const { min: valueMin, max: valueMax } = this.getInvestRange(dataSet);
-    const { min: dateMin, max: dateMax } = this.getDateRange(dataSet);
+    if (!dataSet) {
+      return;
+    }
+
+    const investmentValues = this.getInvestmentValues(dataSet);
     const { width, height } = this.getCanvasSize();
 
     const box = d3.select(this.element.current);
 
+    // find out min max for time range
+    let dateMinMax = d3.extent<ProjectionRow, Date>(dataSet, row =>
+      dateUtils.convertToDate(row.yearMonth)
+    );
+    dateMinMax = [dateMinMax[0] || new Date(), dateMinMax[1] || new Date()];
+
     // Functions for drawing X axis (time)
     const xTicks = d3
-      .scaleTime()
-      .domain([dateMin, dateMax])
+      .scaleUtc()
+      .domain(dateMinMax)
       .range([margin.left, width - margin.right]);
 
     const drawXAxis = (g: d3.Selection<SVGGElement, unknown, null, undefined>) =>
@@ -108,10 +87,14 @@ class Chart extends Component<Props> {
           })
       );
 
+    // find out min max for investment numbers
+    let investMinMax = d3.extent<number, number>(investmentValues, val => val);
+    investMinMax = [investMinMax[0] || 0, investMinMax[1] || 0];
+
     // Functions for drawing Y axis (investment)
     const yTicks = d3
       .scaleLinear()
-      .domain([valueMin, valueMax])
+      .domain(investMinMax)
       .range([height - margin.bottom, margin.top]);
 
     const drawYAxis = (g: d3.Selection<SVGGElement, unknown, null, undefined>) =>

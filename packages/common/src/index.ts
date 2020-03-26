@@ -1,5 +1,6 @@
 export * as api from './api';
 export * as numbers from './numbers';
+export * as date from './date';
 
 export interface ProjectionRow {
   sequence: number;
