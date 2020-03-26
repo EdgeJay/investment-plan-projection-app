@@ -1,7 +1,15 @@
 import React, { createRef, Component, RefObject } from 'react';
 import * as d3 from 'd3';
 import { date as dateUtils, ProjectionRow } from '@ipp/common';
-import { addLine, setupCanvasContainer, setupCanvas } from '../utils/d3';
+import {
+  addLine,
+  addDotsToLine,
+  addToolTip,
+  getValueForLineType,
+  LineType,
+  setupCanvasContainer,
+  setupCanvas,
+} from '../utils/d3';
 
 const chartElementId = 'chart';
 const defaultCanvasWidth = 500;
@@ -11,6 +19,10 @@ const margin = {
   right: 70,
   bottom: 20,
   left: 16,
+};
+const toolTipOffset = {
+  x: 16,
+  y: 16,
 };
 
 interface Props {
@@ -117,31 +129,31 @@ class Chart extends Component<Props> {
       .line<ProjectionRow>()
       .defined(row => dateUtils.isDefined(row.yearMonth))
       .x(row => xTicks(dateUtils.convertToDate(row.yearMonth)))
-      .y(row => yTicks(row.expectedAmounts['75']));
+      .y(row => yTicks(getValueForLineType(LineType.TOP_25, row)));
 
     const medianLine = d3
       .line<ProjectionRow>()
       .defined(row => dateUtils.isDefined(row.yearMonth))
       .x(row => xTicks(dateUtils.convertToDate(row.yearMonth)))
-      .y(row => yTicks(row.expectedAmounts['50']));
+      .y(row => yTicks(getValueForLineType(LineType.MEDIAN, row)));
 
     const bottom10Line = d3
       .line<ProjectionRow>()
       .defined(row => dateUtils.isDefined(row.yearMonth))
       .x(row => xTicks(dateUtils.convertToDate(row.yearMonth)))
-      .y(row => yTicks(row.expectedAmounts['10']));
+      .y(row => yTicks(getValueForLineType(LineType.BOTTOM_10, row)));
 
     const benchmarkLine = d3
       .line<ProjectionRow>()
       .defined(row => dateUtils.isDefined(row.yearMonth))
       .x(row => xTicks(dateUtils.convertToDate(row.yearMonth)))
-      .y(row => yTicks(row.expectedAmounts.benchmark));
+      .y(row => yTicks(getValueForLineType(LineType.BENCHMARK, row)));
 
     const totalDepositLine = d3
       .line<ProjectionRow>()
       .defined(row => dateUtils.isDefined(row.yearMonth))
       .x(row => xTicks(dateUtils.convertToDate(row.yearMonth)))
-      .y(row => yTicks(row.totalDeposit));
+      .y(row => yTicks(getValueForLineType(LineType.TOTAL_DEPOSIT, row)));
 
     // add lines to chart
     addLine({ canvas, dataSet, line: top25Line, strokeColour: 'steelblue' });
@@ -154,19 +166,25 @@ class Chart extends Component<Props> {
       line: totalDepositLine,
       strokeColour: 'darkblue',
       strokeWidth: 1.5,
-    });
-    addLine({
+    }).attr('stroke-dasharray', '10, 5');
+
+    // add dots to lines
+    addDotsToLine({
       canvas,
       dataSet,
-      line: totalDepositLine,
-      strokeColour: 'darkblue',
-      strokeWidth: 1.5,
-    }).attr('stroke-dasharray', '10, 5');
+      xTicks,
+      yTicks,
+      toolTipOffset,
+    });
+
+    // Add div as tooltip
+    addToolTip({ container: box });
   }
 
   componentDidMount() {
     if (this.element.current) {
-      setupCanvasContainer(this.element.current);
+      const { width, height } = this.getCanvasSize();
+      setupCanvasContainer({ elementRef: this.element.current, width, height });
     }
   }
 

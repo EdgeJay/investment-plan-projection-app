@@ -2,10 +2,20 @@
 
 import React, { FunctionComponent, Suspense, lazy, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
 import Body from '../components/Body';
 import Loader from '../components/Loader';
 import { RootState } from '../reducers';
 import * as actions from '../actions/projection';
+
+const Container = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Chart = lazy(() => import('../components/Chart'));
 
@@ -33,9 +43,11 @@ const Projection: FunctionComponent = () => {
 
   return (
     <Body>
-      <Suspense fallback={<Loader waitMessage={'Loading chart...'} />}>
-        <Chart dataSet={dataSet} width={800} height={600} />
-      </Suspense>
+      <Container>
+        <Suspense fallback={<Loader waitMessage={'Loading chart...'} />}>
+          <Chart dataSet={dataSet} width={800} height={600} />
+        </Suspense>
+      </Container>
     </Body>
   );
 };
