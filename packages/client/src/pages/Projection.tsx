@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Body from '../components/Body';
 import Loader from '../components/Loader';
+import InputRow from '../components/InputRow';
 import { RootState } from '../reducers';
 import * as actions from '../actions/projection';
 
@@ -41,11 +42,28 @@ const Projection: FunctionComponent = () => {
     fetchProjection();
   }, []);
 
+  const handleSubmit = (initialInvestment: number, monthlyInvestment: number) => {
+    dispatch(
+      actions.fetchProjection({
+        initialInvestment,
+        monthlyInvestment,
+      })
+    );
+  };
+
   return (
     <Body>
       <Container>
         <Suspense fallback={<Loader waitMessage={'Loading chart...'} />}>
-          <Chart dataSet={dataSet} width={800} height={600} />
+          <>
+            <InputRow
+              initialInvestment={initialInvestment}
+              monthlyInvestment={monthlyInvestment}
+              handleSubmit={handleSubmit}
+              disabled={isBusy}
+            />
+            <Chart dataSet={dataSet} width={800} height={600} />
+          </>
         </Suspense>
       </Container>
     </Body>

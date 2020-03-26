@@ -35,6 +35,14 @@ export function setupCanvas({
     .style('box-shadow', '2px 2px 8px 0px rgba(115,115,115,1)');
 }
 
+export function destroyCanvas({
+  container,
+}: {
+  container: d3.Selection<HTMLDivElement, unknown, null, undefined>;
+}) {
+  container.select('svg').remove();
+}
+
 export function addLine<DS>({
   canvas,
   dataSet,

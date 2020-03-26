@@ -9,6 +9,7 @@ import {
   LineType,
   setupCanvasContainer,
   setupCanvas,
+  destroyCanvas,
 } from '../utils/d3';
 
 const chartElementId = 'chart';
@@ -115,6 +116,10 @@ class Chart extends Component<Props> {
         .attr('transform', `translate(${width - margin.right}, 0)`)
         .call(d3.axisRight(yTicks).tickFormat(y => `$${d3.format('.1f')((y as number) / 1e6)}m`));
 
+    // destroy previous instances of SVG
+    destroyCanvas({ container: box });
+
+    // create new SVG canvas
     const canvas = setupCanvas({
       container: box,
       width,
