@@ -1,6 +1,7 @@
 import React, { createRef, Component, RefObject } from 'react';
 import * as d3 from 'd3';
-import { date as dateUtils, numbers, ProjectionRow } from '@ipp/common';
+import { date as dateUtils, ProjectionRow } from '@ipp/common';
+import { addLine, setupCanvasContainer, setupCanvas } from '../utils/d3';
 
 const chartElementId = 'chart';
 const defaultCanvasWidth = 500;
@@ -34,7 +35,7 @@ class Chart extends Component<Props> {
     const { width, height } = this.props;
     return {
       width: width || defaultCanvasWidth,
-      height: height || defaultCanvasWidth,
+      height: height || defaultCanvasHeight,
     };
   }
 
@@ -54,8 +55,8 @@ class Chart extends Component<Props> {
     return values;
   }
 
-  drawAxes(dataSet?: ProjectionRow[]) {
-    if (!dataSet) {
+  draw(dataSet?: ProjectionRow[]) {
+    if (!dataSet || !this.element.current) {
       return;
     }
 
@@ -102,31 +103,76 @@ class Chart extends Component<Props> {
         .attr('transform', `translate(${width - margin.right}, 0)`)
         .call(d3.axisRight(yTicks).tickFormat(y => `$${d3.format('.1f')((y as number) / 1e6)}m`));
 
-    const canvas = box
-      .append('svg')
-      .attr('viewBox', `0 0 ${width} ${height}`)
-      .style('width', `${width || defaultCanvasWidth}px`)
-      .style('height', `${height || defaultCanvasHeight}px`)
-      .style('background-color', '#fff')
-      .style('box-shadow', '2px 2px 8px 0px rgba(115,115,115,1)');
+    const canvas = setupCanvas({
+      container: box,
+      width,
+      height,
+    });
 
     canvas.append('g').call(drawXAxis);
     canvas.append('g').call(drawYAxis);
+
+    // setup line functions
+    const top25Line = d3
+      .line<ProjectionRow>()
+      .defined(row => dateUtils.isDefined(row.yearMonth))
+      .x(row => xTicks(dateUtils.convertToDate(row.yearMonth)))
+      .y(row => yTicks(row.expectedAmounts['75']));
+
+    const medianLine = d3
+      .line<ProjectionRow>()
+      .defined(row => dateUtils.isDefined(row.yearMonth))
+      .x(row => xTicks(dateUtils.convertToDate(row.yearMonth)))
+      .y(row => yTicks(row.expectedAmounts['50']));
+
+    const bottom10Line = d3
+      .line<ProjectionRow>()
+      .defined(row => dateUtils.isDefined(row.yearMonth))
+      .x(row => xTicks(dateUtils.convertToDate(row.yearMonth)))
+      .y(row => yTicks(row.expectedAmounts['10']));
+
+    const benchmarkLine = d3
+      .line<ProjectionRow>()
+      .defined(row => dateUtils.isDefined(row.yearMonth))
+      .x(row => xTicks(dateUtils.convertToDate(row.yearMonth)))
+      .y(row => yTicks(row.expectedAmounts.benchmark));
+
+    const totalDepositLine = d3
+      .line<ProjectionRow>()
+      .defined(row => dateUtils.isDefined(row.yearMonth))
+      .x(row => xTicks(dateUtils.convertToDate(row.yearMonth)))
+      .y(row => yTicks(row.totalDeposit));
+
+    // add lines to chart
+    addLine({ canvas, dataSet, line: top25Line, strokeColour: 'steelblue' });
+    addLine({ canvas, dataSet, line: medianLine, strokeColour: 'darkgreen' });
+    addLine({ canvas, dataSet, line: bottom10Line, strokeColour: 'red' });
+    addLine({ canvas, dataSet, line: benchmarkLine, strokeColour: 'black', strokeWidth: 1.5 });
+    addLine({
+      canvas,
+      dataSet,
+      line: totalDepositLine,
+      strokeColour: 'darkblue',
+      strokeWidth: 1.5,
+    });
+    addLine({
+      canvas,
+      dataSet,
+      line: totalDepositLine,
+      strokeColour: 'darkblue',
+      strokeWidth: 1.5,
+    }).attr('stroke-dasharray', '10, 5');
   }
 
   componentDidMount() {
-    d3.select(this.element.current)
-      .style('width', '100%')
-      .style('height', '100%')
-      .style('display', 'flex')
-      .style('flex-flow', 'row nowrap')
-      .style('justify-content', 'center')
-      .style('align-items', 'center');
+    if (this.element.current) {
+      setupCanvasContainer(this.element.current);
+    }
   }
 
   componentDidUpdate() {
     const { dataSet } = this.props;
-    this.drawAxes(dataSet);
+    this.draw(dataSet);
   }
 
   render() {
