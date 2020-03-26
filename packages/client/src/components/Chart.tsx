@@ -7,9 +7,9 @@ const defaultCanvasWidth = 500;
 const defaultCanvasHeight = 500;
 const margin = {
   top: 16,
-  right: 16,
+  right: 70,
   bottom: 20,
-  left: 70,
+  left: 16,
 };
 
 interface Props {
@@ -51,7 +51,7 @@ class Chart extends Component<Props> {
         values.push(data.expectedAmounts.benchmark);
       });
 
-      values = values.sort().reverse();
+      values = values.sort((a, b) => a - b);
 
       return {
         min: values[0],
@@ -62,21 +62,18 @@ class Chart extends Component<Props> {
     return result;
   }
 
-  getDateRange(dataSet?: ProjectionRow[]): { min: number; max: number } {
-    const result = { min: 0, max: 0 };
-    let values: number[] = [];
+  getDateRange(dataSet?: ProjectionRow[]): { min: Date; max: Date } {
+    const result = { min: new Date(), max: new Date() };
+    let values: Date[] = [];
 
     if (dataSet && dataSet.length > 0) {
       dataSet.forEach(data => {
         const parts = data.yearMonth.split('-');
-        const timestamp = new Date(
-          numbers.convertToInt(parts[0]),
-          numbers.convertToInt(parts[1])
-        ).getTime();
-        values.push(timestamp);
+        const date = new Date(numbers.convertToInt(parts[0]), numbers.convertToInt(parts[1]) - 1);
+        values.push(date);
       });
 
-      values = values.sort();
+      values = values.sort((a, b) => a.getTime() - b.getTime());
 
       return {
         min: values[0],
@@ -94,23 +91,33 @@ class Chart extends Component<Props> {
 
     const box = d3.select(this.element.current);
 
-    // Functions for drawing X axis
+    // Functions for drawing X axis (time)
     const xTicks = d3
-      .scaleLinear()
+      .scaleTime()
       .domain([dateMin, dateMax])
       .range([margin.left, width - margin.right]);
 
     const drawXAxis = (g: d3.Selection<SVGGElement, unknown, null, undefined>) =>
-      g.attr('transform', `translate(0, ${height - margin.bottom})`).call(d3.axisBottom(xTicks));
+      g.attr('transform', `translate(0, ${height - margin.bottom})`).call(
+        d3
+          .axisBottom(xTicks)
+          .ticks(d3.timeYear.every(3))
+          .tickFormat(x => {
+            const date = x as Date;
+            return `${date.getUTCFullYear()}`;
+          })
+      );
 
-    // Functions for drawing Y axis
+    // Functions for drawing Y axis (investment)
     const yTicks = d3
       .scaleLinear()
       .domain([valueMin, valueMax])
       .range([height - margin.bottom, margin.top]);
 
     const drawYAxis = (g: d3.Selection<SVGGElement, unknown, null, undefined>) =>
-      g.attr('transform', `translate(${margin.left}, 0)`).call(d3.axisLeft(yTicks));
+      g
+        .attr('transform', `translate(${width - margin.right}, 0)`)
+        .call(d3.axisRight(yTicks).tickFormat(y => `$${d3.format('.1f')((y as number) / 1e6)}m`));
 
     const canvas = box
       .append('svg')
