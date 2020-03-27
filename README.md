@@ -22,6 +22,7 @@ Add `.env` file with following content to `packages/server`
 
 ```
 NODE_PORT=4000
+REDIS_HOST=ipp_redis
 REDIS_PORT=6379
 ```
 
@@ -35,7 +36,7 @@ As this repository is managed via Lerna, and uses Yarn workspaces, running `yarn
 
 ### Without Docker
 
-IMPORTANT: If you wish to run the apps without Docker, you must have an instance of `redis` running at localhost:6379.
+IMPORTANT: If you wish to run the apps without Docker, you must have an instance of `redis` running at localhost:6379, and value of `REDIS_HOST` in `packages/server/.env` file should be changed to `localhost`.
 
 1. `cd packages/server`
 2. `yarn run dev`  // server will listen at port 4000
@@ -43,6 +44,8 @@ IMPORTANT: If you wish to run the apps without Docker, you must have an instance
 4. `yarn run start` // client will run at port 3000
 
 ### With Docker
+
+Add `REACT_APP_DOCKER_ENV=true` to `packages/client/.env` file too.
 
 1. `yarn run docker:build`
 2. `yarn run docker:deploy`
