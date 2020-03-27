@@ -13,6 +13,9 @@ services:
       context: .
       dockerfile: server.Dockerfile
     image: edgejay/ipp-server
+    environment:
+    - DOCKER_ENV=true
+    - REDIS_HOST=ipp_redis
     ports:
     - "4000:4000"
     networks:
@@ -23,6 +26,8 @@ services:
       context: .
       dockerfile: nginx.Dockerfile
     image: edgejay/ipp-nginx
+    environment:
+    - REACT_APP_DOCKER_ENV=true
     ports:
     - "8080:80"
     networks:

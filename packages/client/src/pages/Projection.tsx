@@ -61,7 +61,6 @@ const Projection: FunctionComponent = () => {
               initialInvestment={initialInvestment}
               monthlyInvestment={monthlyInvestment}
               handleSubmit={handleSubmit}
-              disabled={isBusy}
             />
             <Chart dataSet={dataSet} width={800} height={600} />
           </>

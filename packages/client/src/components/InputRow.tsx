@@ -1,5 +1,8 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+
+import React, { FunctionComponent, useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
+import debounce from 'lodash.debounce';
 import { numbers } from '@ipp/common';
 
 const Container = styled.div`
@@ -37,6 +40,7 @@ const InputField = styled.label`
   }
 `;
 
+/*
 const SubmitButton = styled.button`
   background-color: darkblue;
   font-size: 1.2rem;
@@ -45,19 +49,20 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 0.5rem;
 `;
+*/
+
+type HandleSubmitFunc = (initialInvestment: number, monthlyInvestment: number) => void;
 
 interface Props {
   initialInvestment?: number;
   monthlyInvestment?: number;
-  disabled?: boolean;
-  handleSubmit?: (initialInvestment: number, monthlyInvestment: number) => void;
+  handleSubmit?: HandleSubmitFunc;
 }
 
 const InputRow: FunctionComponent<Props> = ({
   initialInvestment = 0,
   monthlyInvestment = 0,
   handleSubmit = () => {},
-  disabled = false,
 }) => {
   const [initInvest, setInitInvest] = useState(initialInvestment);
   const [mnthInvest, setMnthInvest] = useState(monthlyInvestment);
@@ -65,7 +70,12 @@ const InputRow: FunctionComponent<Props> = ({
   useEffect(() => {
     setInitInvest(initialInvestment);
     setMnthInvest(monthlyInvestment);
-  }, [initialInvestment, monthlyInvestment]);
+  }, []);
+
+  const debouncedHandleSubmit = useRef(debounce<HandleSubmitFunc>(handleSubmit, 1000)).current;
+  const dispatchHandleSubmit = (initialInvestment: number, monthlyInvestment: number) => {
+    debouncedHandleSubmit(initialInvestment, monthlyInvestment);
+  };
 
   return (
     <Container>
@@ -75,8 +85,11 @@ const InputRow: FunctionComponent<Props> = ({
           type={'text'}
           name={'initialInvestment'}
           value={initInvest}
-          onChange={evt => setInitInvest(numbers.convertToInt(evt.target.value))}
-          disabled={disabled}
+          onChange={evt => {
+            const newValue = numbers.convertToInt(evt.target.value);
+            setInitInvest(newValue);
+            dispatchHandleSubmit(newValue, mnthInvest);
+          }}
         />
       </InputField>
       <InputField>
@@ -85,19 +98,13 @@ const InputRow: FunctionComponent<Props> = ({
           type={'text'}
           name={'monthlyInvestment'}
           value={mnthInvest}
-          onChange={evt => setMnthInvest(numbers.convertToInt(evt.target.value))}
-          disabled={disabled}
+          onChange={evt => {
+            const newValue = numbers.convertToInt(evt.target.value);
+            setMnthInvest(newValue);
+            dispatchHandleSubmit(initInvest, newValue);
+          }}
         />
       </InputField>
-      <SubmitButton
-        onClick={evt => {
-          evt.preventDefault();
-          handleSubmit(initInvest, mnthInvest);
-        }}
-        disabled={disabled}
-      >
-        Calculate
-      </SubmitButton>
     </Container>
   );
 };

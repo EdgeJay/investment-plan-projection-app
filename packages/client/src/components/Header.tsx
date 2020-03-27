@@ -25,6 +25,7 @@ const StyledHeader = styled.header`
 
 const Header: FunctionComponent = () => (
   <StyledHeader>
+    <Link to={'/'}>Home</Link>
     <Link to={'/projection'}>Projection</Link>
   </StyledHeader>
 );

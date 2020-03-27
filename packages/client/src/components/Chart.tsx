@@ -190,6 +190,7 @@ class Chart extends Component<Props> {
     if (this.element.current) {
       const { width, height } = this.getCanvasSize();
       setupCanvasContainer({ elementRef: this.element.current, width, height });
+      this.draw(this.props.dataSet);
     }
   }
 

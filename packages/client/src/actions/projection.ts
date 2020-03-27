@@ -37,11 +37,15 @@ export const fetchProjection = ({
     // inform app to go into busy state
     dispatch(fetchingProjection());
 
+    const endpoint = `${
+      !!process.env.REACT_APP_DOCKER_ENV ? '' : 'http://localhost:4000'
+    }/api/projection`;
+
     // fetch data from /api/projection
     const dataSet = await api.fetchProjection({
       initialInvestment,
       monthlyInvestment,
-      endpoint: 'http://localhost:4000/api/projection',
+      endpoint,
     });
 
     // Update store with fetched data

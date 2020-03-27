@@ -11,3 +11,14 @@ export function convertToDate(dateStr: string): Date {
   }
   return new Date();
 }
+
+const dateFormatter = new Intl.DateTimeFormat('en', {
+  year: 'numeric',
+  month: 'long',
+  day: '2-digit',
+});
+
+export const convertToDateString = (date: Date): string => {
+  const [{ value: MMM }, , , , { value: yyyy }, ,] = dateFormatter.formatToParts(date);
+  return `${MMM} ${yyyy}`;
+};

@@ -30,6 +30,10 @@ function start(): void {
     app.listen(port, (): void => {
       // eslint-disable-next-line
       console.log(`Server started listening at port ${port}`);
+      // eslint-disable-next-line
+      console.log(`Docker environment: ${!!process.env.DOCKER_ENV}`);
+      // eslint-disable-next-line
+      console.log(`Redis host: ${process.env.REDIS_HOST}`);
     });
   } else {
     throw new Error('Missing dotenv configuration');

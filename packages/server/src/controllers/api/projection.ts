@@ -14,6 +14,8 @@ function composeCachedItemKey({
 }
 
 export default async (ctx: ExtendedContext, next: Next): Promise<void> => {
+  const inDockerEnv = process.env.DOCKER_ENV === 'true';
+
   if (ctx.request.method === 'POST') {
     const { initialInvestment: initial, monthlyInvestment: monthly } = ctx.request.body || {};
     const initialInvestment = numbers.convertToInt(initial || '');
@@ -57,9 +59,13 @@ export default async (ctx: ExtendedContext, next: Next): Promise<void> => {
     }
 
     ctx.set('ETag', eTagValue);
-    ctx.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+    if (!inDockerEnv) {
+      ctx.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+    }
+
     ctx.json({ body: dataSet });
-  } else if (ctx.request.method === 'OPTIONS') {
+  } else if (ctx.request.method === 'OPTIONS' && !inDockerEnv) {
     ctx.set('Access-Control-Allow-Origin', 'http://localhost:3000');
     ctx.set('Access-Control-Request-Method', 'POST');
     ctx.set('Access-Control-Allow-Headers', 'content-type');

@@ -11,11 +11,9 @@
     "lint": "eslint \"./src/**/*.ts\"",
     "dev": "concurrently \"tsc --watch\" \"nodemon -L | pino-pretty\"",
     "dev:test": "tsc --watch",
-    "start": "node -r esm ./dist/index.js",
+    "start": "REDIS_HOST=localhost node -r esm ./dist/index.js",
     "test": "tsc && ava --verbose --config ./ava.config.js",
-    "build": "yarn run clean && tsc",
-    "docker:build": "docker build -t edgejay/ipp-server .",
-    "docker:run": "docker run -d --rm -p 4000:4000 --name ipp_server edgejay/ipp-server"
+    "build": "yarn run clean && tsc"
   },
   "repository": {
     "type": "git",
