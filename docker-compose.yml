@@ -9,7 +9,9 @@ services:
     - ipp_network
   server:
     container_name: ipp_server
-    build: ./packages/server
+    build:
+      context: .
+      dockerfile: server.Dockerfile
     image: edgejay/ipp-server
     ports:
     - "4000:4000"
