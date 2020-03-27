@@ -19,7 +19,11 @@ A working version of the app can also be viewed at http://134.209.40.92
 1. `touch .env && echo "NODE_PORT=4000" > ./.env`
 2. `yarn install`
 
+As this repository is managed via Lerna, and uses Yarn workspaces, running `yarn install` will also help to bootstrap all packages stored under `packages/*` and install all required node modules under the root folder.
+
 ### Without Docker
+
+IMPORTANT: If you wish to run the apps without Docker, you must have an instance of `redis` running at localhost:6379.
 
 1. `cd packages/server`
 2. `yarn run dev`
@@ -60,6 +64,10 @@ This repo used the following 3rd-party libraries for various tasks:
 ### [Koa.js](https://koajs.com/)
 
 Backbone of server app. Handles routing, incoming/outgoing requests/responses. Very similar to Express.
+
+### [d3](https://d3js.org/)
+
+For rendering graphs and charts.
 
 ### [styled-components](https://styled-components.com/)
 
