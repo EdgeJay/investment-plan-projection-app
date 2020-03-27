@@ -1,5 +1,5 @@
 import React, { Suspense, FunctionComponent, lazy } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createAppStore } from './store';
 import { appInitialState } from '../reducers';
