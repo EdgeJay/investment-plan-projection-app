@@ -3,11 +3,8 @@ import dotenv, { DotenvParseOutput } from 'dotenv';
 
 export interface ParsedOutput extends DotenvParseOutput {
   NODE_PORT: string;
-  DB_CLIENT: string;
-  DB_HOST: string;
-  DB_USER: string;
-  DB_PASS: string;
-  DB_NAME: string;
+  REDIS_HOST: string;
+  REDIS_PORT: string;
 }
 
 export function locateDotEnvPath(filename: string): string {
@@ -45,4 +42,17 @@ export function initDotEnv(dotenvPath: string = DEFAULT_PATH): ParsedOutput | un
  */
 export function getNodePort({ NODE_PORT }: ParsedOutput): string {
   return NODE_PORT;
+}
+
+/**
+ * Extracts and returns redis settings.
+ *
+ * @param param0 Object that should contain REDIS_HOST, REDIS_PORT fields
+ */
+export function getRedisConfig({
+  REDIS_HOST,
+  REDIS_PORT,
+}: ParsedOutput): { host: string; port: number } {
+  const port = parseInt(REDIS_PORT, 10);
+  return { host: REDIS_HOST, port };
 }

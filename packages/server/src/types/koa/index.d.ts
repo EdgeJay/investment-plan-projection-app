@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { ParameterizedContext } from 'koa';
+import { AsyncRedisClient } from '../redis';
 
 declare module 'koa' {
   interface BodyInput {
@@ -6,17 +9,27 @@ declare module 'koa' {
   }
 
   interface JsonInputParams {
-    body?: BodyInput;
+    body?: BodyInput | string | unknown[];
     statusCode?: number;
   }
 
   interface ExtendableContext {
     json: (params: JsonInputParams) => void;
   }
+
+  interface Request {
+    body?:
+      | {
+          initialInvestment?: string;
+          monthlyInvestment?: string;
+        }
+      | any;
+  }
 }
 
 export interface ExtendedState {
   transactionId: string;
+  redis: AsyncRedisClient;
 }
 
 export type ExtendedContext = ParameterizedContext<ExtendedState>;

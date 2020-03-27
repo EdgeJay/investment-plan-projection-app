@@ -9,7 +9,7 @@
     "dist/*"
   ],
   "execMap": {
-    "js": "node -r esm --inspect"
+    "js": "REDIS_HOST=localhost node -r esm --inspect"
   },
   "ext": "js json"
 }

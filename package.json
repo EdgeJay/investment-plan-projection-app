@@ -7,9 +7,12 @@
     "lint": "lerna run lint",
     "test": "lerna run test",
     "build": "lerna run build",
-    "docker:build-all": "docker-compose build",
+    "docker:build": "docker-compose build",
     "docker:deploy": "docker-compose up -d",
-    "docker:dispose": "docker-compose down"
+    "docker:dispose": "docker-compose down",
+    "docker:build-droplet": "docker-compose -f docker-compose.droplet.yml build",
+    "docker:deploy-droplet": "docker-compose -f docker-compose.droplet.yml up -d",
+    "docker:dispose-droplet": "docker-compose -f docker-compose.droplet.yml down"
   },
   "repository": {
     "type": "git",
